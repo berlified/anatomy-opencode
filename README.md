@@ -13,6 +13,8 @@ them too. React + TypeScript + Vite, no diagram libraries.
   (`src/exchange.tsx`).
 - **Fig 03 · The water bench** — a token bucket rate limiter, built with the
   `simpleiso` skill below (`src/simple/BucketBench.tsx`).
+- **Fig 04 · The halving shelf** — binary search, same skill
+  (`src/simple/HalvingShelf.tsx`).
 
 ## The skill
 

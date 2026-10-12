@@ -11,6 +11,7 @@ import {
   pathOf,
   roundedPlan,
   ringAt,
+  shiftPath,
   type Projection,
   type V3,
 } from "./iso";
@@ -52,7 +53,7 @@ interface Stats {
 
 // World route the parcel (the order) travels: a conveyor in front of the machines.
 const ROUTE: V3[] = [
-  [30, 100, 34],
+  [20, 100, 34],
   [70, 100, 36],
   [108, 100, 36],
   [148, 100, 36],
@@ -62,7 +63,7 @@ const ROUTE: V3[] = [
 
 const STAGE_T = [0.02, 0.24, 0.47, 0.72, 0.9, 0.985];
 const STAGE_POS: V3[] = [
-  [30, 100, 30],
+  [20, 100, 30],
   [70, 100, 32],
   [108, 100, 32],
   [148, 100, 32],
@@ -340,9 +341,12 @@ export default function PocketsFlowMint({ still }: { still: boolean }) {
     const spring1 = coilPath(iso([30, 88, 12], P), iso([30, 88, 22], P), 5, 2.4);
     const spring2 = coilPath(iso([149, 60, 30], P), iso([149, 60, 50 + lift], P), 6, 2.6);
 
-    // the parcel: the one lit subject, built as a true iso box at origin
-    const parcelBox = box(-5, -4, 0, 10, 8, 7, P);
-    const parcelTape = pathOf([iso([-5, 0, 7], P), iso([5, 0, 7], P)]);
+    // the parcel: the one lit subject, built as a true iso box at origin,
+    // recentered so it renders exactly at its <g> translate point
+    const pRaw = box(-5, -4, 0, 10, 8, 7, P);
+    const ctr = (d: string) => shiftPath(d, P.origin[0], P.origin[1]);
+    const parcelBox = { top: ctr(pRaw.top), left: ctr(pRaw.left), right: ctr(pRaw.right) };
+    const parcelTape = ctr(pathOf([iso([-5, 0, 7], P), iso([5, 0, 7], P)]));
 
     return {
       baseTop,
@@ -828,12 +832,6 @@ export default function PocketsFlowMint({ still }: { still: boolean }) {
           <path d={g.needleA} className="ln-hi" />
           <path d={g.needleB} className="ln-hi" />
           <path d={g.spring2} className="ln-mid spring" />
-          <path d={g.beam.left} className="t-1" />
-          <path d={g.beam.right} className="t-2" />
-          <path d={g.beam.top} className="t-hi" />
-          {g.beamBolts.map((s, i) => (
-            <circle key={`bb${i}`} cx={s[0]} cy={s[1]} r={1.4} className="dot" />
-          ))}
           <g ref={pistonRef}>
             <path d={g.piston.side} className="t-2" />
             <path d={g.piston.top} className="t-top" />
@@ -845,6 +843,12 @@ export default function PocketsFlowMint({ still }: { still: boolean }) {
             <path d={g.die.right} className="t-2" />
             <path d={g.die.top} className="t-lit" />
           </g>
+          <path d={g.beam.left} className="t-1" />
+          <path d={g.beam.right} className="t-2" />
+          <path d={g.beam.top} className="t-hi" />
+          {g.beamBolts.map((s, i) => (
+            <circle key={`bb${i}`} cx={s[0]} cy={s[1]} r={1.4} className="dot" />
+          ))}
         </g>
 
         {/* ===== DELIVERY + EMAIL ===== */}

@@ -311,6 +311,19 @@ export function fitView(
 
 export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+/** Recenter a path by (dx, dy). Use it on local geometry built for inside
+ *  a translated <g>: build with box(), then shift by -projection.origin so
+ *  the part renders exactly at the group's translate point. */
+export function shiftPath(d: string, dx: number, dy: number): string {
+  let i = 0;
+  return d.replace(/-?\d+(?:\.\d+)?/g, (m) => {
+    const v = parseFloat(m) - (i % 2 === 0 ? dx : dy);
+    i++;
+    const r = Math.round(v * 10) / 10;
+    return String(Object.is(r, -0) ? 0 : r);
+  });
+}
+
 /** Route helper: position along a world polyline at t in [0,1]. */
 export function alongRoute(route: V3[], t: number): V3 {
   const segs: number[] = [];

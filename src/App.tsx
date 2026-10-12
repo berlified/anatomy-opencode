@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PocketsFlowMint from "./mint";
 import Exchange from "./exchange";
 import BucketBench from "./simple/BucketBench";
+import HalvingShelf from "./simple/HalvingShelf";
 import { WEBHOOK_EVENTS } from "./model";
 
 type Theme = "light" | "dark" | "paper" | "blueprint";
@@ -46,6 +47,7 @@ export default function App() {
           <a href="#figure">mint</a>
           <a href="#figure2">exchange</a>
           <a href="#figure3">bench</a>
+          <a href="#figure4">shelf</a>
           <a href="#how">how it works</a>
           <a href="#api">api</a>
           <a href="https://www.pocketsflow.com" target="_blank" rel="noreferrer">
@@ -118,6 +120,21 @@ export default function App() {
             </p>
           </div>
           <BucketBench still={still} />
+        </section>
+
+        <section id="figure4" className="figwrap">
+          <div className="fig-intro">
+            <h2>Fig 04 — binary search, the simpleiso way.</h2>
+            <p>
+              Same skill, second proof: seven sorted jars, a pointer that glides to
+              the middle, the wrong half sinks. After{" "}
+              <a href="https://skills.wheresryan.sh/anatomy/collection/binary-search">
+                the collection&apos;s lab balance ↗
+              </a>
+              , drawn so any cheap model could rebuild it.
+            </p>
+          </div>
+          <HalvingShelf still={still} />
         </section>
 
         <section id="how" className="how">

@@ -33,6 +33,18 @@ export function dot(x: number, y: number, z: number): Pt {
   return iso([x, y, z]);
 }
 
+/** Recenter a path by (dx, dy). Moving parts live inside a translated
+ *  <g>, so build them with box() and shift by -(OX, OY): the part then
+ *  renders exactly at the group's translate point. */
+export function shiftPath(d: string, dx: number, dy: number): string {
+  let i = 0;
+  return d.replace(/-?\d+(?:\.\d+)?/g, (m) => {
+    const v = parseFloat(m) - (i % 2 === 0 ? dx : dy);
+    i++;
+    const r = Math.round(v * 10) / 10;
+    return String(Object.is(r, -0) ? 0 : r);
+  });
+}
 /** Flat hexagon top for dials and jars. */
 export function hexTop(x: number, y: number, z: number, r: number): string {
   const pts: Pt[] = [];

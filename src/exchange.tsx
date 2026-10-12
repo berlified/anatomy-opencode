@@ -10,6 +10,7 @@ import {
   pathOf,
   roundedPlan,
   ringAt,
+  shiftPath,
   type Projection,
   type V3,
 } from "./iso";
@@ -233,6 +234,7 @@ export default function Exchange({ still }: { still: boolean }) {
     const stampPost = box(190, 58, 24, 2.6, 2.6, 14, P);
     const stampHead = box(187, 55, 34, 8, 8, 3.4, P);
     const chopBase = cylinder(182, 60, 24, 2.4, 1.6, P, 16);
+    const chopC = iso([187, 60, 26], P);
 
     // BELL + DIAL (ledger corner)
     const bellStand = box(210, 68, 8, 4, 10, 20, P);
@@ -252,10 +254,13 @@ export default function Exchange({ still }: { still: boolean }) {
       + cablePath([[196, 62, 26], [202, 54, 12], [210, 60, 22]], P);
     const wireDots = [[52, 58, 14], [96, 58, 30], [124, 60, 30], [134, 60, 26], [160, 62, 26], [170, 60, 24], [196, 62, 26], [210, 60, 22]].map((q) => iso(q as V3, P));
 
-    // parcel + bucket bodies at origin (translated per frame)
-    const parcelBox = box(-5, -4, 0, 10, 8, 7, P);
-    const parcelTape = pathOf([iso([-5, 0, 7], P), iso([5, 0, 7], P)]);
-    const bucketBox = box(-3.6, -3, 0, 7.2, 6, 5, P);
+    // parcel + bucket bodies, recentered so they render at their <g> translate
+    const ctr = (d: string) => shiftPath(d, P.origin[0], P.origin[1]);
+    const pRaw = box(-5, -4, 0, 10, 8, 7, P);
+    const parcelBox = { top: ctr(pRaw.top), left: ctr(pRaw.left), right: ctr(pRaw.right) };
+    const parcelTape = ctr(pathOf([iso([-5, 0, 7], P), iso([5, 0, 7], P)]));
+    const bRaw = box(-3.6, -3, 0, 7.2, 6, 5, P);
+    const bucketBox = { top: ctr(bRaw.top), left: ctr(bRaw.left), right: ctr(bRaw.right) };
 
     return {
       baseTop, baseSkirt, halo, feet, ticks: ticks.join(""), screws,
@@ -265,7 +270,7 @@ export default function Exchange({ still }: { still: boolean }) {
       cradleA, cradleB, axle, cards, ticket, crank,
       tColA, tColB, tBeam, tPiston, tDie, tAnvil, flagA, flagB, pennA, pennB,
       panPosts, panShelf1, panShelf2, jars, jarLids, lampPost, chute,
-      stove, stoveTop, potA, potB, steamA, drawer, drawerPull, stampPost, stampHead, chopBase,
+      stove, stoveTop, potA, potB, steamA, drawer, drawerPull, stampPost, stampHead, chopBase, chopC,
       bellStand, bell, dial,
       plate, plateRules, wire, wireDots,
       parcelBox, parcelTape, bucketBox,
@@ -494,7 +499,7 @@ export default function Exchange({ still }: { still: boolean }) {
       const idle = stillRef.current ? 0 : Math.sin(now / 900) * 1.2;
       pressRef.current?.setAttribute("transform", `translate(0 ${(seal * 3).toFixed(2)})`);
       dnsRef.current?.setAttribute("transform", `translate(0 ${(match * -4).toFixed(2)})`);
-      chopRef.current?.setAttribute("transform", `rotate(${(idle * 2).toFixed(2)})`);
+      chopRef.current?.setAttribute("transform", `rotate(${(idle * 2).toFixed(2)} ${g.chopC[0].toFixed(1)} ${g.chopC[1].toFixed(1)})`);
       const ring = backsRef.current.some((b) => (backProg.current.get(b.id) ?? 0) > 0.9);
       bellRef.current?.setAttribute("transform", ring && !stillRef.current ? `translate(0 ${(-Math.abs(Math.sin(now / 90)) * 2).toFixed(2)})` : "translate(0 0)");
     };
